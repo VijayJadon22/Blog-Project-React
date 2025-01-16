@@ -11,23 +11,33 @@ const Blog = () => {
     // if (title && content) {
     if (data.title !== "" && data.content !== "") {
       //   setBlogs((prevBlogs) => [{ title, content }, ...prevBlogs]);
-      setBlogs((prevBlogs) => [...data, ...prevBlogs]);
+      setBlogs((prevBlogs) => [
+        { title: data.title, content: data.content },
+        ...prevBlogs,
+      ]);
       //   setTitle("");
       //   setContent("");
       setData({ title: "", content: "" });
     }
   };
+
+  const removeBlog = (index) => {
+    setBlogs(blogs.filter((blog, i) => i !== index));
+  };
+
   return (
     <div>
       <div>
-        <h1>Write a Blog!</h1>
+        <h1>Create a blog!</h1>
         <input
           style={{ margin: "10px" }}
           type="text"
           placeholder="Enter blog title"
           required
           //   onChange={(e) => setTitle(e.target.value)}
-          onChange={(e) => setData({ title: e.target.value, ...data.content })}
+          onChange={(e) =>
+            setData({ title: e.target.value, content: data.content })
+          }
           value={data.title}
         />
         <br />
@@ -37,7 +47,9 @@ const Blog = () => {
           placeholder="Enter blog content"
           required
           //   onChange={(e) => setContent(e.target.value)}
-          onChange={(e) => setData({ content: e.target.value, ...data.title })}
+          onChange={(e) =>
+            setData({ content: e.target.value, title: data.title })
+          }
           value={data.content}
         />
         <button onClick={addBlog}>Add blog!</button>
@@ -49,6 +61,7 @@ const Blog = () => {
             <div key={index} className={styles.blogCards}>
               <h3>{ele.title}</h3>
               <p>{ele.content}</p>
+              <button onClick={() => removeBlog(index)}>Delete</button>
             </div>
           ))
         ) : (
