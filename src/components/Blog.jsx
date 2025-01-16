@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../styles.module.css";
 
 const Blog = () => {
@@ -6,6 +6,19 @@ const Blog = () => {
   //   const [content, setContent] = useState("");
   const [data, setData] = useState({ title: "", content: "" });
   const [blogs, setBlogs] = useState([]);
+  const titleInputRef = useRef(null);
+
+  useEffect(() => {
+    titleInputRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    if (blogs.length !== 0) {
+      document.title = blogs[0].title;
+    } else {
+      document.title = "No Blogs!";
+    }
+  }, [blogs]);
 
   const addBlog = () => {
     // if (title && content) {
@@ -18,6 +31,7 @@ const Blog = () => {
       //   setTitle("");
       //   setContent("");
       setData({ title: "", content: "" });
+      titleInputRef.current.focus(); // Bring the cursor back to the title input field
     }
   };
 
@@ -35,6 +49,7 @@ const Blog = () => {
           placeholder="Enter blog title"
           required
           //   onChange={(e) => setTitle(e.target.value)}
+          ref={titleInputRef}
           onChange={(e) =>
             setData({ title: e.target.value, content: data.content })
           }
