@@ -1,11 +1,27 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import styles from "../styles.module.css";
+// import { db } from "../firebase";
 
 const Blog = () => {
+  const blogReducer = (state, action) => {
+    switch (action.type) {
+      case "add":
+        return [action.payload, ...state];
+      /* action.payload is basically what we wrote in payload of dispatch below => { title: data.title, content: data.content }, if we used payload directly then we have to write like this the line below which is same as { title: action.payload.title, content: action.payload.content } */
+
+      case "remove":
+        return state.filter((blog, i) => i !== action.payload.index);
+
+      default:
+        return state;
+    }
+  };
+
   //   const [title, setTitle] = useState("");
   //   const [content, setContent] = useState("");
   const [data, setData] = useState({ title: "", content: "" });
-  const [blogs, setBlogs] = useState([]);
+  // const [blogs, setBlogs] = useState([]);
+  const [blogs, dispatch] = useReducer(blogReducer, []);
   const titleInputRef = useRef(null);
 
   useEffect(() => {
@@ -24,10 +40,17 @@ const Blog = () => {
     // if (title && content) {
     if (data.title !== "" && data.content !== "") {
       //   setBlogs((prevBlogs) => [{ title, content }, ...prevBlogs]);
-      setBlogs((prevBlogs) => [
-        { title: data.title, content: data.content },
-        ...prevBlogs,
-      ]);
+
+      // setBlogs((prevBlogs) => [
+      //   { title: data.title, content: data.content },
+      //   ...prevBlogs,
+      // ]);
+
+      dispatch({
+        type: "add",
+        payload: { title: data.title, content: data.content },
+      });
+
       //   setTitle("");
       //   setContent("");
       setData({ title: "", content: "" });
@@ -36,7 +59,8 @@ const Blog = () => {
   };
 
   const removeBlog = (index) => {
-    setBlogs(blogs.filter((blog, i) => i !== index));
+    // setBlogs(blogs.filter((blog, i) => i !== index));
+    dispatch({ type: "remove", payload: { index: index } });
   };
 
   return (
